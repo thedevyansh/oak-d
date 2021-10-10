@@ -12,7 +12,7 @@ nnPath = str((Path(__file__).parent / Path('./models/mobilenet-ssd_openvino_2021
 labelMap = ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow",
             "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
 
-# Sart defining a pipeline
+# Start defining a pipeline
 pipeline = dai.Pipeline()
 
 # Define a source - color camera
@@ -87,7 +87,7 @@ with dai.Device(pipeline) as device:
 
         # if the frame is available, render detection data on frame and display.
         if frame is not None:
-            displayFrame("rgb", frame)
+            displayFrame("Object Detection", frame)
 
         if cv2.waitKey(1) == ord('q'):
             break
