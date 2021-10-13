@@ -4,9 +4,8 @@ from pathlib import Path
 import cv2
 import depthai as dai
 import numpy as np
-import time
 
-nnPath = str((Path(__file__).parent / Path('./models/mobilenet-ssd_openvino_2021.2_6shave.blob')).resolve().absolute())
+nnPath = str((Path(__file__).parent / Path('./models/mobilenet-ssd_openvino_2021.2_6shave.blob')).resolve())
 
 # MobilenetSSD class labels
 labelMap = ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow",
@@ -21,8 +20,6 @@ cam.setPreviewSize(300, 300)
 cam.setInterleaved(False)
 
 # Define a neural network that will make predictions based on the source frames
-# DetectionNetwork class produces ImgDetections message that carries parsed
-# detection results.
 nn = pipeline.createMobileNetDetectionNetwork()
 nn.setBlobPath(nnPath)
 
@@ -52,8 +49,6 @@ with dai.Device(pipeline) as device:
     qRgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
     qDet = device.getOutputQueue(name="nn", maxSize=4, blocking=False)
 
-    startTime = time.monotonic()
-    counter = 0
     detections = []
     frame = None
 
@@ -78,12 +73,9 @@ with dai.Device(pipeline) as device:
 
         if inRgb is not None:
             frame = inRgb.getCvFrame()
-            cv2.putText(frame, "NN fps: {:.2f}".format(counter / (time.monotonic() - startTime)),
-                        (2, frame.shape[0] - 4), cv2.FONT_HERSHEY_TRIPLEX, 0.4, color=(255, 255, 255))
 
         if inDet is not None:
             detections = inDet.detections
-            counter += 1
 
         # if the frame is available, render detection data on frame and display.
         if frame is not None:
